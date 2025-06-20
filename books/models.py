@@ -54,26 +54,3 @@ class BookCopy(models.Model):
     
     def __str__(self):
         return f"{self.book.title} (Owned by: {self.owner.username})"
-
-class BorrowRequest(models.Model):
-    """Requests to borrow a book copy"""
-    STATUS_CHOICES = [
-        ('pending', 'Pending'),
-        ('approved', 'Approved'),
-        ('rejected', 'Rejected'),
-        ('completed', 'Completed'),
-        ('cancelled', 'Cancelled'),
-    ]
-    
-    book_copy = models.ForeignKey(BookCopy, on_delete=models.CASCADE, related_name='borrow_requests')
-    borrower = models.ForeignKey(User, on_delete=models.CASCADE, related_name='borrow_requests')
-    request_date = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
-    response_date = models.DateTimeField(blank=True, null=True)
-    expected_return_date = models.DateField(blank=True, null=True)
-    actual_return_date = models.DateField(blank=True, null=True)
-    lender_notes = models.TextField(blank=True, null=True)
-    borrower_notes = models.TextField(blank=True, null=True)
-    
-    def __str__(self):
-        return f"{self.borrower.username} wants to borrow {self.book_copy.book.title}"
