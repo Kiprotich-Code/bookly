@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python Version](https://img.shields.io/badge/python-3.8%2B-blue.svg)](https://www.python.org/)
 
-![BookClub Logo](./images/Genre.PNG)
+![BookClub Logo](./images/image.png)
 
 Welcome to the **BookClub API**! This project provides a robust backend for managing book clubs, members, books, and discussions. Built with Django REST Framework.
 
