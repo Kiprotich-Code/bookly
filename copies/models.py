@@ -1,6 +1,6 @@
 from django.db import models
 from accounts.models import User
-from books.models import BookCopy
+from books.models import BookCopy, Book
 
 # Create your models here.
 class BookRequest(models.Model):
