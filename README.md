@@ -1,13 +1,12 @@
 # BookClub API
-
-![BookClub Logo](https://via.placeholder.com/120x40.png?text=BookClub+API)
+![BookClub Genre](./images/Genre.PNG)
 
 [![Build Status](https://img.shields.io/github/actions/workflow/status/Kiprotich-Code/bookclub_api/ci.yml?branch=main)](https://github.com/Kiprotich-Code/bookclub_api/actions)
 [![Coverage Status](https://img.shields.io/codecov/c/github/Kiprotich-Code/bookclub_api/main.svg)](https://codecov.io/gh/Kiprotich-Code/bookclub_api)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python Version](https://img.shields.io/badge/python-3.8%2B-blue.svg)](https://www.python.org/)
 
-`![BookClub Logo](./images/Genre.PNG)` BookClub API
+`![BookClub Logo](./images/Genre.PNG)` 
 
 Welcome to the **BookClub API**! This project provides a robust backend for managing book clubs, members, books, and discussions. Built with Django REST Framework.
 
