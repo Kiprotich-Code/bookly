@@ -1,6 +1,6 @@
 from django.urls import path
 from rest_framework.authtoken.views import obtain_auth_token
-from .views import AuthView, LogoutView, verify_token, PasswordResetView, LinkAccountView, UserProfileView
+from .views import AuthView, LogoutView, verify_token, PasswordResetView, LinkAccountView
 
 urlpatterns = [
     # Authentication

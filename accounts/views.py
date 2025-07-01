@@ -6,6 +6,7 @@ from rest_framework.authtoken.models import Token
 from .serializers import EmailAuthSerializer, GoogleAuthSerializer
 from rest_framework.decorators import api_view
 from allauth.socialaccount.models import SocialAccount
+from .models import User
 
 class AuthView(APIView):
     def post(self, request):

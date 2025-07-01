@@ -3,10 +3,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-ajfg$0vj46(-6v(-8h01l^6&g4ui1kydo)cc7ed-ksz!_=ybds'
 
@@ -19,6 +15,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'django.contrib.sites',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -28,17 +25,17 @@ INSTALLED_APPS = [
 
     # Installed Apps 
     'rest_framework',
-    'books',
-    'accounts',
-    'copies',
-
-    
-    # Allauth 
-    'django.contrib.sites',
+    'rest_framework.authtoken',
+    'corsheaders',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'dj_rest_auth',
+    'dj_rest_auth.registration',
+    'books',
+    'accounts',
+    'copies',
 ]
 
 MIDDLEWARE = [
