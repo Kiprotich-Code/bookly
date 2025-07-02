@@ -1,12 +1,17 @@
 # views.py
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status, serializers
+from rest_framework import status, serializers, generics
 from rest_framework.authtoken.models import Token
-from .serializers import EmailAuthSerializer, GoogleAuthSerializer, PasswordResetSerializer
+from .serializers import EmailAuthSerializer, GoogleAuthSerializer, PasswordResetSerializer, RegisterSerializer, UserProfileSerializer
 from rest_framework.decorators import api_view
 from allauth.socialaccount.models import SocialAccount
 from .models import User
+from rest_framework.permissions import IsAuthenticated
+
+# REGISTER NEW USERS 
+class RegisterView(generics.CreateAPIView):
+    serializer_class = RegisterSerializer
 
 class AuthView(APIView):
     def post(self, request):
@@ -89,3 +94,30 @@ class PasswordResetView(APIView):
             # (Implement your email sending logic)
             return Response({'success': True})
         return Response(serializer.errors, status=400)
+    
+
+class UserProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        """
+        Retrieve the authenticated user's profile
+        """
+        serializer = UserProfileSerializer(request.user)
+        return Response(serializer.data)
+    
+    def patch(self, request):
+        """
+        Update the authenticated user's profile (partial update)
+        """
+        serializer = UserProfileSerializer(
+            request.user, 
+            data=request.data, 
+            partial=True
+        )
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

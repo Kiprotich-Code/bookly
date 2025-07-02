@@ -8,6 +8,21 @@ from google.auth.transport import requests as google_requests
 
 User = get_user_model()
 
+class RegisterSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'password')
+
+    def create(self, validated_data):
+        user = User.objects.create_user(
+            username=validated_data['username'],
+            email=validated_data['email'],
+            password=validated_data['password']
+        )
+        return user
+
 class EmailAuthSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField(style={'input_type': 'password'})
@@ -71,3 +86,16 @@ class PasswordResetSerializer(serializers.Serializer):
         if not User.objects.filter(email=value).exists():
             raise serializers.ValidationError("Email not found")
         return value
+    
+
+# USER PROFILE 
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = [ 'id', 'username', 'email', 'bio', 'location', 'favorite_genres', 'profile_picture', 'reading_preferences', 'member_since' ]
+        read_only_fields = [ 'id', 'username', 'email', 'member_since' ]
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        if instance.profile_picture:
+            representation['profile_picture'] = instance.profile_picture.url
+        return representation
