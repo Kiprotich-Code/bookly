@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, serializers
 from rest_framework.authtoken.models import Token
-from .serializers import EmailAuthSerializer, GoogleAuthSerializer
+from .serializers import EmailAuthSerializer, GoogleAuthSerializer, PasswordResetSerializer
 from rest_framework.decorators import api_view
 from allauth.socialaccount.models import SocialAccount
 from .models import User
@@ -79,17 +79,6 @@ class LinkAccountView(APIView):
                 {'error': 'Invalid token'},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        
-
-# PASSWORD RESET LOGIC 
-# serializers.py
-class PasswordResetSerializer(serializers.Serializer):
-    email = serializers.EmailField()
-
-    def validate_email(self, value):
-        if not User.objects.filter(email=value).exists():
-            raise serializers.ValidationError("Email not found")
-        return value
 
 # views.py
 class PasswordResetView(APIView):

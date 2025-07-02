@@ -4,7 +4,7 @@ from .views import AuthView, LogoutView, verify_token, PasswordResetView, LinkAc
 
 urlpatterns = [
     # Authentication
-    path('', AuthView.as_view(), name='auth'),
+    path('auth/', AuthView.as_view(), name='auth'),
     path('auth/logout/', LogoutView.as_view(), name='logout'),
     path('auth/password/reset/', PasswordResetView.as_view(), name='password-reset'),
     path('auth/link-account/', LinkAccountView.as_view(), name='link-account'),
