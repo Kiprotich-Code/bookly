@@ -25,15 +25,17 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 class EmailAuthSerializer(serializers.Serializer):
     email = serializers.EmailField()
-    password = serializers.CharField(style={'input_type': 'password'})
+    password = serializers.CharField(write_only=True, style={'input_type': 'password'})
 
-    def validate(self, attrs):
-        user = authenticate(
-            username=attrs['email'],
-            password=attrs['password']
-        )
-        if not user:
-            raise serializers.ValidationError('Invalid credentials')
+    def validate(self, data):
+        email = data.get('email')
+        password = data.get('password')
+        user = authenticate(username=email, password=password)
+        if user is None:
+            return serializers.ValidationError("Unable to log in with the provided credentials.")
+        if not user.is_active:
+            raise serializers.ValidationError("User account is disabled.")
+        data['user'] = user
         return user
 
 class GoogleAuthSerializer(serializers.Serializer):
