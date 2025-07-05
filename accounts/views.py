@@ -10,8 +10,20 @@ from .models import User
 from rest_framework.permissions import IsAuthenticated
 
 # REGISTER NEW USERS 
-class RegisterView(generics.CreateAPIView):
-    serializer_class = RegisterSerializer
+class RegisterView(APIView):
+    def post(self, request):
+        serializer = RegisterSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            token, created = Token.objects.get_or_create(user=user)
+            
+            return Response({
+                'token': token.key,
+                'user_id': user.id,
+                'email': user.email,
+                'is_profile_complete': user.is_profile_complete
+            }, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class AuthView(APIView):
     def post(self, request):
@@ -30,11 +42,17 @@ class AuthView(APIView):
         if serializer.is_valid():
             user = serializer.validated_data
             token, created = Token.objects.get_or_create(user=user)
+
+            # Get first name if available 
+            first_name = getattr(user, 'first_name', '')
+
             return Response({
                 'token': token.key,
                 'user_id': user.id,
                 'email': user.email,
-                'is_google': hasattr(user, 'socialaccount')
+                'is_google': hasattr(user, 'socialaccount'),
+                'is_profile_complete': user.is_profile_complete,
+                'first_name': first_name
             })
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     

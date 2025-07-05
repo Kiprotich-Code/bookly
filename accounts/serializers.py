@@ -21,7 +21,10 @@ class RegisterSerializer(serializers.ModelSerializer):
             email=validated_data['email'],
             password=validated_data['password']
         )
+        user.is_profile_complete = False
+        user.save()
         return user
+
 
 class EmailAuthSerializer(serializers.Serializer):
     email = serializers.EmailField()
