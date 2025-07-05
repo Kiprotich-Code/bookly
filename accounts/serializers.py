@@ -95,12 +95,27 @@ class PasswordResetSerializer(serializers.Serializer):
 
 # USER PROFILE 
 class UserProfileSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(source='username', read_only=True)
+    privacy_settings = serializers.JSONField()
+    favorite_genres = serializers.JSONField()
+    
     class Meta:
-        fields = [ 'id', 'username', 'email', 'bio', 'location', 'favorite_genres', 'profile_picture', 'reading_preferences', 'member_since' ]
-        read_only_fields = [ 'id', 'username', 'email', 'member_since' ]
+        model = User  # or Profile if using OneToOne
+        fields = [
+            'id', 'username', 'email', 'name',
+            'bio', 'location', 'favorite_genres',
+            'profile_picture', 'member_since',
+            'privacy_settings', 'reading_goal',
+            'books_read', 'total_swaps', 'average_rating'
+        ]
+        read_only_fields = [
+            'id', 'username', 'email', 'member_since',
+            'books_read', 'total_swaps', 'average_rating'
+        ]
 
     def to_representation(self, instance):
-        representation = super().to_representation(instance)
+        data = super().to_representation(instance)
         if instance.profile_picture:
-            representation['profile_picture'] = instance.profile_picture.url
-        return representation
+            data['profile_picture'] = instance.profile_picture.url
+            data['avatar'] = instance.profile_picture.url
+        return data

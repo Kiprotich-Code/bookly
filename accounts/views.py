@@ -1,16 +1,17 @@
 # views.py
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status, serializers, generics
+from rest_framework import status, serializers, generics, permissions
 from rest_framework.authtoken.models import Token
 from .serializers import EmailAuthSerializer, GoogleAuthSerializer, PasswordResetSerializer, RegisterSerializer, UserProfileSerializer
 from rest_framework.decorators import api_view
 from allauth.socialaccount.models import SocialAccount
 from .models import User
-from rest_framework.permissions import IsAuthenticated
 
 # REGISTER NEW USERS 
 class RegisterView(APIView):
+    permission_classes = [permissions.AllowAny, ]
+
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
@@ -26,6 +27,8 @@ class RegisterView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class AuthView(APIView):
+    permission_classes = [ permissions.AllowAny ]
+
     def post(self, request):
         auth_type = request.data.get('type')
         
@@ -68,7 +71,7 @@ def verify_token(request):
 
 # LOGOUT VIEW 
 class LogoutView(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [ permissions.IsAuthenticated ]
 
     def post(self, request):
         # Delete the token
@@ -79,7 +82,7 @@ class LogoutView(APIView):
 # DON'T CREATE ACCOUNT IF IT EXIST 
 # views.py
 class LinkAccountView(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [ permissions.IsAuthenticated ]
 
     def post(self, request):
         token = request.data.get('token')
@@ -115,14 +118,19 @@ class PasswordResetView(APIView):
     
 
 class UserProfileView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [ permissions.IsAuthenticated ]
     
     def get(self, request):
         """
         Retrieve the authenticated user's profile
         """
-        serializer = UserProfileSerializer(request.user)
-        return Response(serializer.data)
+        user = request.user
+        token, created = Token.objects.get_or_create(user=user)
+        serializer = UserProfileSerializer(user)
+        return Response({
+            'user': serializer.data,
+            'token': token.key  # Include token in response for verification
+        })
     
     def patch(self, request):
         """
@@ -136,6 +144,12 @@ class UserProfileView(APIView):
         
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            return Response({
+                'user': serializer.data,
+                'message': 'Profile updated successfully'
+            })
         
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response({
+            'errors': serializer.errors,
+            'message': 'Update failed'
+        }, status=status.HTTP_400_BAD_REQUEST)
