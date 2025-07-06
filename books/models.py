@@ -13,9 +13,27 @@ class Genre(models.Model):
 
 class Book(models.Model):
     """Book information"""
+    GENRE_CHOICES = [
+        ("Fiction", "Fiction"),
+        ("Non-Fiction", "Non-Fiction"),
+        ("Science Fiction", "Science Fiction"),
+        ("Fantasy", "Fantasy"),
+        ("Mystery", "Mystery"),
+        ("Thriller", "Thriller"),
+        ("Romance", "Romance"),
+        ("Biography", "Biography"),
+        ("History", "History"),
+        ("Self-Help", "Self-Help"),
+        ("Literary Fiction", "Literary Fiction"),
+        ("Young Adult", "Young Adult"),
+        ("Children's", "Children's"),
+        ("Poetry", "Poetry"),
+        ("Horror", "Horror"),
+    ]
+
     title = models.CharField(max_length=200)
     authors = models.CharField(max_length=200)
-    genres = models.ManyToManyField(Genre, related_name='books')
+    genre = models.CharField(max_length=50, choices=GENRE_CHOICES, blank=True, null=True)
     published_date = models.DateField(blank=True, null=True)
     publisher = models.CharField(max_length=100, blank=True, null=True)
     isbn = models.CharField(max_length=20, blank=True, null=True, unique=True)
