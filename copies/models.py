@@ -1,6 +1,6 @@
 from django.db import models
 from accounts.models import User
-from books.models import BookCopy, Book
+from books.models import Book
 
 # Create your models here.
 class BookRequest(models.Model):
@@ -19,12 +19,12 @@ class BookRequest(models.Model):
     ]
     
     request_type = models.CharField(max_length=20, choices=REQUEST_TYPE_CHOICES, default='borrow')
-    requested_book = models.ForeignKey(BookCopy, on_delete=models.CASCADE, related_name='requests_received')
+    requested_book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='requests_received')
     requester = models.ForeignKey(User, on_delete=models.CASCADE, related_name='requests_made')
     
     # For swap requests only
     offered_book = models.ForeignKey(
-        BookCopy, 
+        Book, 
         on_delete=models.SET_NULL, 
         null=True, 
         blank=True, 

@@ -1,5 +1,4 @@
 from django.db import models
-from django.core.validators import MinValueValidator, MaxValueValidator
 from accounts.models import User
 
 # Models 
@@ -12,7 +11,7 @@ class Genre(models.Model):
         return self.name
 
 class Book(models.Model):
-    """Book information"""
+    """Book with ownership and copy information"""
     GENRE_CHOICES = [
         ("Fiction", "Fiction"),
         ("Non-Fiction", "Non-Fiction"),
@@ -31,44 +30,28 @@ class Book(models.Model):
         ("Horror", "Horror"),
     ]
 
-    title = models.CharField(max_length=200)
-    authors = models.CharField(max_length=200)
-    genre = models.CharField(max_length=50, choices=GENRE_CHOICES, blank=True, null=True)
-    published_date = models.DateField(blank=True, null=True)
-    publisher = models.CharField(max_length=100, blank=True, null=True)
-    isbn = models.CharField(max_length=20, blank=True, null=True, unique=True)
-    page_count = models.PositiveIntegerField(blank=True, null=True)
-    language = models.CharField(max_length=50, blank=True, null=True)
-    description = models.TextField(blank=True, null=True)
-    cover_image = models.ImageField(upload_to='book_covers/', blank=True, null=True)
-    
-    def __str__(self):
-        return self.title
-
-class BookCopy(models.Model):
-    """Physical/digital copies of books owned by users"""
-    CONDITION_CHOICES = [
-        ('new', 'New'),
-        ('like_new', 'Like New'),
-        ('good', 'Good'),
-        ('fair', 'Fair'),
-        ('poor', 'Poor'),
-    ]
-    
     STATUS_CHOICES = [
         ('available', 'Available'),
         ('borrowed', 'Borrowed'),
         ('requested', 'Requested'),
         ('unavailable', 'Unavailable'),
     ]
+
+    # Book information
+    title = models.CharField(max_length=200)
+    author = models.CharField(max_length=200)
+    genre = models.CharField(max_length=50, choices=GENRE_CHOICES, blank=True, null=True)
+    page_count = models.PositiveIntegerField(blank=True, null=True)
+    language = models.CharField(max_length=50, blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
+    cover_image = models.ImageField(upload_to='book_covers/', blank=True, null=True)
     
-    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='copies')
+    # Copy/ownership information
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owned_books')
-    condition = models.CharField(max_length=20, choices=CONDITION_CHOICES, default='good')
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='available')
     notes = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
     def __str__(self):
-        return f"{self.book.title} (Owned by: {self.owner.username})"
+        return f"{self.title} (Owned by: {self.owner.username})"

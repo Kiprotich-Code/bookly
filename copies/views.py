@@ -3,7 +3,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from .models import BookRequest
 from .serializers import BookRequestSerializer
-from books.models import BookCopy
+from books.models import Book
 from django.db.models import Q
 
 # Views 

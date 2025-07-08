@@ -1,13 +1,13 @@
 from rest_framework import serializers
 from .models import BookRequest
-from books.models import BookCopy
+from books.models import Book
 from accounts.models import User
 
 
 # serializers 
 class BookCopyMinimalSerializer(serializers.ModelSerializer):
     class Meta:
-        model = BookCopy
+        model = Book
         fields = ['id', 'condition', 'status']
 
         def to_representation(self, instance):
@@ -20,14 +20,14 @@ class BookCopyMinimalSerializer(serializers.ModelSerializer):
 class BookRequestSerializer(serializers.ModelSerializer):
     requested_book = BookCopyMinimalSerializer(read_only=True)
     requested_book_id = serializers.PrimaryKeyRelatedField(
-        queryset=BookCopy.objects.filter(status='available'),
+        queryset=Book.objects.filter(status='available'),
         write_only=True,
         source='requested_book'
     )
 
     offered_book = BookCopyMinimalSerializer(read_only=True, required=False)
     offered_book_id = serializers.PrimaryKeyRelatedField(
-        queryset=BookCopy.objects.all(),
+        queryset=Book.objects.all(),
         write_only=True,
         required=False,
         source='offered_book'
