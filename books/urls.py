@@ -5,8 +5,8 @@ from .views import BookViewSet, GenreViewset
 
 # ROUTERS
 router = routers.DefaultRouter()
-router.register(r'books', BookViewSet)
-router.register(r'genres', GenreViewset)
+router.register(r'books', BookViewSet, basename='book')
+router.register(r'genres', GenreViewset, basename='genre')
 
 # urls 
 urlpatterns = [
